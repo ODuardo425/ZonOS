@@ -10,7 +10,7 @@ create table if not exists ordens_servico (
   id          uuid primary key default gen_random_uuid(),
   num         text unique not null,              -- "OS-2026-0045"
   tipo        text not null,                     -- Vistoria | Instalação | Manutenção corretiva | Manutenção preventiva
-  desc        text,
+  "desc"      text,
   prest       text,
   estado      text,
   cidade      text,
@@ -19,7 +19,7 @@ create table if not exists ordens_servico (
   conclusao   date,
   crg         text default '–',                  -- código do carregador
   serie       text,
-  local       text,
+  "local"     text,
   status      text default 'Aberta',             -- Aberta | Em andamento | Em validação | Concluída | Cancelada
   valor       text default '–',
   obs         text,

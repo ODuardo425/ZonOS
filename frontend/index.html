@@ -978,12 +978,25 @@ function isGestor() { return _currentUser && _currentUser.perfil === 'gestor'; }
 function isOperador() { return _currentUser && _currentUser.perfil === 'operador'; }
 
 // ── LOGIN ──
-function fazerLogin() {
+async function fazerLogin() {
   const u = document.getElementById('l-user').value.trim().toLowerCase();
   const p = document.getElementById('l-pass').value;
-  const user = USUARIOS[u];
-  if(user && user.senha === p) { entrar(user); return; }
-  document.getElementById('l-err').style.display = 'block';
+  const errEl = document.getElementById('l-err');
+  errEl.style.display = 'none';
+  try {
+    const data = await apiLogin(u, p);
+    const initials = (data.nome || u).split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+    const user = {
+      usuario: data.usuario,
+      nome:    data.nome,
+      perfil:  data.perfil,
+      av:      initials,
+    };
+    entrar(user);
+  } catch (e) {
+    console.error('Login falhou:', e.message);
+    errEl.style.display = 'block';
+  }
 }
 
 function loginDemo(perfil) {

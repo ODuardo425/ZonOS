@@ -59,6 +59,14 @@ function apiLogout() {
 // ══════════════════════════════════════════════════
 
 async function carregarSheets(cb) {
+  if (!_apiToken) {
+    // Pré-login: usa demo local sem bater na API
+    if (OS_LIST.length === 0 && typeof OS_DEMO_SEED !== 'undefined') {
+      OS_LIST = [...OS_DEMO_SEED];
+    }
+    if (cb) cb();
+    return;
+  }
   const dot = document.getElementById('sync-dot');
   const lbl = document.getElementById('sync-label');
   if (dot) dot.className = 'sync-dot';
@@ -149,6 +157,7 @@ async function enviarSheets(aba, dados) {
 // ══════════════════════════════════════════════════
 
 async function carregarPreenchimentos(cb) {
+  if (!_apiToken) { if (cb) cb(); return; }
   try {
     const rows = await api.get('/preenchimentos');
     rows.forEach(p => {
@@ -186,6 +195,13 @@ async function carregarPreenchimentos(cb) {
 // ══════════════════════════════════════════════════
 
 async function carregarUsuarios(cb) {
+  if (!_apiToken) {
+    if (typeof USUARIOS !== 'undefined') {
+      Object.values(USUARIOS).forEach(u => { _usuarios[u.usuario] = u; });
+    }
+    if (cb) cb();
+    return;
+  }
   try {
     const rows = await api.get('/usuarios');
     _usuarios = {};
@@ -205,6 +221,7 @@ async function carregarUsuarios(cb) {
 // ══════════════════════════════════════════════════
 
 async function carregarPrestadores(cb) {
+  if (!_apiToken) { if (cb) cb(); return; }
   try {
     const data = await api.get('/prestadores');
     _prestadores = data; // já vem como objeto { login: {...} }
